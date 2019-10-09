@@ -7,11 +7,18 @@ const verifyToken = require('./verifyToken')
 const User = require('../models/User')
 
 router.post('/signup', async (req, res, next) => {
-  const { username, email, password } = req.body
+  const { code, password, firstNames, parentalLastName, maternalLastName, email, city, phone, notes, role } = req.body
   const user = new User({
-    username,
+    code,
+    password,
+    firstNames,
+    parentalLastName,
+    maternalLastName,
     email,
-    password
+    city,
+    phone,
+    notes,
+    role
   })
   user.password = await user.encryptPassword(user.password)
   await user.save()
@@ -48,6 +55,19 @@ router.get('/me', verifyToken, async (req, res, next) => {
   }
 
   res.json(user)
+})
+
+router.get('/api/users', verifyToken, async (req, res, next) => {
+  const users = await User.find({}, { password: 0 })
+  if (!users) {
+    return res.status(404).send('No users found')
+  }
+  const { role } = req.body
+  if (role !== 'admin') {
+    return res.status(404).send('insufficient permissions')
+  }
+
+  res.json(users)
 })
 
 module.exports = router

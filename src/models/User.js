@@ -1,9 +1,16 @@
 const { Schema, model } = require('mongoose')
 const bcrypt = require('bcryptjs')
 const userSchema = new Schema({
-  username: String,
+  code: String,
+  password: String,
+  firstNames: String,
+  parentalLastName: String,
+  maternalLastName: String,
   email: String,
-  password: String
+  city: String,
+  phone: String,
+  notes: String,
+  role: String
 })
 userSchema.methods.encryptPassword = async (password) => {
   const salt = await bcrypt.genSalt(10)
