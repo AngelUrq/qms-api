@@ -70,4 +70,13 @@ router.get('/api/users', verifyToken, async (req, res, next) => {
   res.json(users)
 })
 
+router.get('/signup', async (req, res) => {
+  try {
+    const users = await User.find()
+    res.json(users)
+  } catch (error) {
+    res.json({ message: error })
+  }
+})
+
 module.exports = router
