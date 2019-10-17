@@ -79,4 +79,36 @@ router.get('/signup', async (req, res) => {
   }
 })
 
+router.delete('/signup/:userID', async (req, res) => {
+  try {
+    const removeUser = await User.remove({ _id: req.params.userID })
+    res.json(removeUser)
+  } catch (error) {
+    res.json({ message: error })
+  }
+})
+
+router.patch('/signup/:userID', async (req, res) => {
+  try {
+    const updateUserInfo = await User.updateOne({ _id: req.params.userID },
+      {
+        $set: {
+          code: req.body.code,
+          firstNames: req.body.firstNames,
+          parentalLastName: req.body.parentalLastName,
+          maternalLastName: req.body.maternalLastName,
+          email: req.body.email,
+          city: req.body.city,
+          phone: req.body.phone,
+          notes: req.body.notes,
+          role: req.body.role
+        }
+      }
+    )
+    res.json(updateUserInfo)
+  } catch (error) {
+    res.json({ message: error })
+  }
+})
+
 module.exports = router
