@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://localhost/simplejwt', {
+mongoose.connect('mongodb://localhost/qmsDB', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 
