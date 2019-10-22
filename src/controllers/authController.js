@@ -6,13 +6,13 @@ const config = require('../config')
 const verifyToken = require('./verifyToken')
 const User = require('../models/User')
 
-router.post('/signup', async (req, res, next) => {
-  const { code, password, firstNames, parentalLastName, maternalLastName, email, city, phone, notes, role } = req.body
+router.post('/api/users/signup', async (req, res, next) => {
+  const { code, password, firstNames, paternalLastName, maternalLastName, email, city, phone, notes, role } = req.body
   const user = new User({
     code,
     password,
     firstNames,
-    parentalLastName,
+    paternalLastName,
     maternalLastName,
     email,
     city,
@@ -30,11 +30,16 @@ router.post('/signup', async (req, res, next) => {
   res.json({ auth: true, token })
 })
 
-router.post('/signin', async (req, res, next) => {
-  const { email, password } = req.body
-  const user = await User.findOne({ email: email })
-  if (!user) {
-    return res.status(404).send("the email doesn't exist")
+router.post('/api/users/signin', async (req, res, next) => {
+  const { email, code, password } = req.body
+  const userEmail = await User.findOne({ email: email })
+  const userCode = await User.findOne({ code: code })
+  if (!userEmail && !userCode) {
+    return res.status(404).send("user doesn't exist")
+  }
+  var user = userEmail
+  if (!userEmail) {
+    user = userCode
   }
 
   const validatePassword = await user.validatePassword(password)
@@ -57,29 +62,21 @@ router.get('/me', verifyToken, async (req, res, next) => {
   res.json(user)
 })
 
-router.get('/api/users', verifyToken, async (req, res, next) => {
+router.get('/api/users/getUsers', verifyToken, async (req, res, next) => {
   const users = await User.find({}, { password: 0 })
-  if (!users) {
-    return res.status(404).send('No users found')
-  }
-  const { role } = req.body
-  if (role !== 'admin') {
-    return res.status(404).send('insufficient permissions')
+  try {
+    if (!users) {
+      return res.status(404).send('No users found')
+    }
+    res.json(users)
+  } catch (error) {
+    res.json({ message: error })
   }
 
   res.json(users)
 })
 
-router.get('/signup', async (req, res) => {
-  try {
-    const users = await User.find()
-    res.json(users)
-  } catch (error) {
-    res.json({ message: error })
-  }
-})
-
-router.delete('/signup/:userID', async (req, res) => {
+router.delete('/api/users/deleteUser/:userID', verifyToken, async (req, res) => {
   try {
     const removeUser = await User.remove({ _id: req.params.userID })
     res.json(removeUser)
@@ -88,14 +85,14 @@ router.delete('/signup/:userID', async (req, res) => {
   }
 })
 
-router.patch('/signup/:userID', async (req, res) => {
+router.patch('/api/users/updateUser/:userID', verifyToken, async (req, res) => {
   try {
     const updateUserInfo = await User.updateOne({ _id: req.params.userID },
       {
         $set: {
           code: req.body.code,
           firstNames: req.body.firstNames,
-          parentalLastName: req.body.parentalLastName,
+          paternalLastName: req.body.paternalLastName,
           maternalLastName: req.body.maternalLastName,
           email: req.body.email,
           city: req.body.city,
