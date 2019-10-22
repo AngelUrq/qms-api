@@ -22,18 +22,15 @@ router.post('/api/users/signup', async (req, res, next) => {
   })
   user.password = await user.encryptPassword(user.password)
   await user.save()
-  const token = jwt.sign({ id: user._id }, config.secret, {
-    expiresIn: 60 * 60 * 21
-  })
-
   console.log(user)
-  res.json({ auth: true, token })
+  res.json({ auth: true })
 })
 
 router.post('/api/users/signin', async (req, res, next) => {
   const { email, code, password } = req.body
   const userEmail = await User.findOne({ email: email })
   const userCode = await User.findOne({ code: code })
+  console.log('email: ' + userEmail + ' code ' + userCode)
   if (!userEmail && !userCode) {
     return res.status(404).send("user doesn't exist")
   }
@@ -53,13 +50,12 @@ router.post('/api/users/signin', async (req, res, next) => {
   res.json({ auth: true, token })
 })
 
-router.get('/me', verifyToken, async (req, res, next) => {
-  const user = await User.findById(req.userId, { password: 0 })
-  if (!user) {
-    return res.status(404).send('No user found')
+router.post('/api/users/isLogged', verifyToken, async (req, res, next) => {
+  try {
+    res.json({ auth: true })
+  } catch (error) {
+    res.json({ message: error })
   }
-
-  res.json(user)
 })
 
 router.get('/api/users/getUsers', verifyToken, async (req, res, next) => {
