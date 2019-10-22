@@ -10,4 +10,4 @@ const reportFormatSchema = new Schema({
   subtitles: Object
 })
 
-module.exports = model('Report', reportFormatSchema)
+module.exports = model('ReportFormat', reportFormatSchema)
