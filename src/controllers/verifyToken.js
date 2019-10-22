@@ -3,6 +3,7 @@ const config = require('../config')
 
 function verifyToken (req, res, next) {
   const token = req.headers['x-access-token']
+  console.log('el token es ' + token)
   if (!token) {
     return res.status(401).json({
       auth: false,
@@ -10,6 +11,7 @@ function verifyToken (req, res, next) {
     })
   }
   const decoded = jwt.verify(token, config.secret)
+
   req.userId = decoded.id
   next()
 }

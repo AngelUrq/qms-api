@@ -4,7 +4,7 @@ const userSchema = new Schema({
   code: String,
   password: String,
   firstNames: String,
-  parentalLastName: String,
+  paternalLastName: String,
   maternalLastName: String,
   email: String,
   city: String,
