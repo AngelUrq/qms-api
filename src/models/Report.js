@@ -1,0 +1,13 @@
+const { Schema, model } = require('mongoose')
+
+const reportSchema = new Schema({
+  code: String,
+  name: String,
+  version: String,
+  creationDate: Date,
+  lastModificationDate: Date,
+  title: String,
+  subtitles: Object
+})
+
+module.exports = model('Report', reportSchema)
