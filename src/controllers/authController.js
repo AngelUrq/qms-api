@@ -41,7 +41,7 @@ router.post('/api/users/signin', async (req, res, next) => {
 
   const validatePassword = await user.validatePassword(password)
   if (!validatePassword) {
-    res.status(401).json({ auth: false, token: null })
+    res.status(401).json({ auth: false, token: null, message: 'contraseña incorrecta' })
   }
 
   const token = jwt.sign({ id: user._id }, config.secret, {
