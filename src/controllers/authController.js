@@ -8,6 +8,7 @@ const User = require('../models/User')
 
 router.post('/api/users/signup', async (req, res, next) => {
   const { code, password, firstNames, paternalLastName, maternalLastName, email, city, phone, notes, role } = req.body
+
   const user = new User({
     code,
     password,
@@ -20,9 +21,10 @@ router.post('/api/users/signup', async (req, res, next) => {
     notes,
     role
   })
+
   user.password = await user.encryptPassword(user.password)
   await user.save()
-  console.log(user)
+
   res.json({ auth: true })
 })
 
@@ -30,11 +32,15 @@ router.post('/api/users/signin', async (req, res, next) => {
   const { email, code, password } = req.body
   const userEmail = await User.findOne({ email: email })
   const userCode = await User.findOne({ code: code })
+
   console.log('email: ' + userEmail + ' code ' + userCode)
+
   if (!userEmail && !userCode) {
     return res.status(404).send("user doesn't exist")
   }
+
   var user = userEmail
+
   if (!userEmail) {
     user = userCode
   }
@@ -58,7 +64,7 @@ router.post('/api/users/isLogged', verifyToken, async (req, res, next) => {
   }
 })
 
-router.get('/api/users/getUsers', verifyToken, async (req, res, next) => {
+router.get('/api/users', verifyToken, async (req, res, next) => {
   const users = await User.find({}, { password: 0 })
   try {
     if (!users) {
@@ -72,18 +78,18 @@ router.get('/api/users/getUsers', verifyToken, async (req, res, next) => {
   res.json(users)
 })
 
-router.delete('/api/users/deleteUser/:userID', verifyToken, async (req, res) => {
+router.delete('/api/users/:id', verifyToken, async (req, res) => {
   try {
-    const removeUser = await User.remove({ _id: req.params.userID })
+    const removeUser = await User.remove({ _id: req.params.id })
     res.json(removeUser)
   } catch (error) {
     res.json({ message: error })
   }
 })
 
-router.patch('/api/users/updateUser/:userID', verifyToken, async (req, res) => {
+router.patch('/api/users/:id', verifyToken, async (req, res) => {
   try {
-    const updateUserInfo = await User.updateOne({ _id: req.params.userID },
+    const updateUserInfo = await User.updateOne({ _id: req.params.id },
       {
         $set: {
           code: req.body.code,

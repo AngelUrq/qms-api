@@ -8,6 +8,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 app.use(require('./controllers/authController'))
+app.use(require('./controllers/reportController'))
 app.use(require('./controllers/reportFormatController'))
 
 module.exports = app
