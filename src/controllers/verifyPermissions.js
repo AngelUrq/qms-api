@@ -1,5 +1,6 @@
 const User = require('../models/User')
 const allowedRole = require('../utils/data')
+
 async function verifyPermissions (emailOrCode) {
   var userRole = await User.findOne({ email: emailOrCode })
   if (!userRole) {

@@ -1,13 +1,12 @@
 const { Schema, model } = require('mongoose')
 
 const reportFormatSchema = new Schema({
-  code: String,
   name: String,
   version: String,
-  creationDate: Date,
-  lastModificationDate: Date,
+  creationDate: String,
+  lastModificationDate: String,
   title: String,
-  subtitles: Object
+  subtitles: []
 })
 
-module.exports = model('ReportFormat', reportFormatSchema)
+module.exports = model('ReportFormat', reportFormatSchema, 'report_formats')
