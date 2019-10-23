@@ -12,12 +12,26 @@ router.post('/api/reports', verifyToken, async (req, res) => {
       data,
       creationDate,
       lastModificationDate
+    }, (err, room) => {
+      if (err) {
+        console.log(err)
+        res.status(500).json({ created: false })
+      } else {
+        res.json({ created: true, id: room.id })
+      }
     })
-
-    res.json({ created: true })
   } catch (error) {
     console.log(error)
-    res.json({ created: false })
+    res.status(500).json({ created: false })
+  }
+})
+
+router.patch('/api/reports/:id', verifyToken, async (req, res) => {
+  try {
+    await Report.findByIdAndUpdate(req.params.id, req.body)
+    res.json({ updated: true })
+  } catch (error) {
+    res.status(500).json({ updated: false })
   }
 })
 
