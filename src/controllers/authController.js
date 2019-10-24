@@ -33,8 +33,6 @@ router.post('/api/users/signin', async (req, res, next) => {
   const userEmail = await User.findOne({ email: email })
   const userCode = await User.findOne({ code: code })
 
-  console.log('email: ' + userEmail + ' code ' + userCode)
-
   if (!userEmail && !userCode) {
     return res.status(404).send("user doesn't exist")
   }

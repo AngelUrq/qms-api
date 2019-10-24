@@ -3,6 +3,20 @@ const router = express.Router()
 const Report = require('../models/Report')
 const verifyToken = require('./verifyToken')
 
+router.get('/api/reports', verifyToken, async (req, res) => {
+  try {
+    const reports = await Report.find()
+
+    if (!reports) {
+      return res.status(404).send('No reports found')
+    }
+
+    res.json(reports)
+  } catch (error) {
+    res.json({ message: error })
+  }
+})
+
 router.post('/api/reports', verifyToken, async (req, res) => {
   try {
     const { filename, data, creationDate, lastModificationDate } = req.body
@@ -32,6 +46,15 @@ router.patch('/api/reports/:id', verifyToken, async (req, res) => {
     res.json({ updated: true })
   } catch (error) {
     res.status(500).json({ updated: false })
+  }
+})
+
+router.delete('/api/reports/:id', verifyToken, async (req, res) => {
+  try {
+    await Report.findByIdAndDelete(req.params.id)
+    res.json({ deleted: true })
+  } catch (error) {
+    res.status(500).json({ deleted: false })
   }
 })
 
