@@ -7,8 +7,7 @@ const verifyToken = require('./verifyToken')
 const User = require('../models/User')
 
 router.post('/api/users/signup', async (req, res, next) => {
-  const { code, password, firstNames, paternalLastName, maternalLastName, email, city, phone, notes, role } = req.body
-
+  const { code, password, firstNames, paternalLastName, maternalLastName, email, city, phone, notes, role, lastLogIn } = req.body
   const user = new User({
     code,
     password,
@@ -19,7 +18,8 @@ router.post('/api/users/signup', async (req, res, next) => {
     city,
     phone,
     notes,
-    role
+    role,
+    lastLogIn
   })
 
   user.password = await user.encryptPassword(user.password)
@@ -45,7 +45,7 @@ router.post('/api/users/signin', async (req, res, next) => {
 
   const validatePassword = await user.validatePassword(password)
   if (!validatePassword) {
-    res.status(401).json({ auth: false, token: null })
+    res.status(401).json({ auth: false, token: null, message: 'contraseña incorrecta' })
   }
 
   const token = jwt.sign({ id: user._id }, config.secret, {
@@ -98,11 +98,21 @@ router.patch('/api/users/:id', verifyToken, async (req, res) => {
           city: req.body.city,
           phone: req.body.phone,
           notes: req.body.notes,
-          role: req.body.role
+          role: req.body.role,
+          lastLogIn: req.body.lastLogIn
         }
       }
     )
     res.json(updateUserInfo)
+  } catch (error) {
+    res.json({ message: error })
+  }
+})
+
+router.put('/api/users/updateUser/:userID', async (req, res) => {
+  try {
+    const logTime = await User.findOneAndUpdate({ _id: req.params.userID }, req.body)
+    res.json(logTime)
   } catch (error) {
     res.json({ message: error })
   }

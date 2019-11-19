@@ -10,7 +10,8 @@ const userSchema = new Schema({
   city: String,
   phone: String,
   notes: String,
-  role: String
+  role: String,
+  lastLogIn: String
 })
 userSchema.methods.encryptPassword = async (password) => {
   const salt = await bcrypt.genSalt(10)
