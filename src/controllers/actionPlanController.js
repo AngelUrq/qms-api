@@ -1,31 +1,30 @@
 const express = require('express')
 const router = express.Router()
-const ActionPlanFormat = require('../models/ActionPlanFormat')
+const ActionPlan = require('../models/ActionPlan')
 const verifyToken = require('./verifyToken')
 
-router.get('/api/action-plan-formats', async (req, res) => {
+router.get('/api/action-plans', async (req, res) => {
   try {
-    const actionPlanFormats = await ActionPlanFormat.find()
+    const actionPlans = await ActionPlan.find()
 
-    if (!actionPlanFormats) {
+    if (!actionPlans) {
       return res.status(404).send('No action plan formats found')
     }
 
-    res.json(actionPlanFormats)
+    res.json(actionPlans)
   } catch (error) {
     res.json({ message: error })
   }
 })
 
-router.post('/api/action-plan-formats', verifyToken, async (req, res) => {
+router.post('/api/action-plans', verifyToken, async (req, res) => {
   try {
-    const { name, creationDate, lastModificationDate, structure } = req.body
+    const { name, creationDate, formatID } = req.body
 
-    ActionPlanFormat.create({
+    ActionPlan.create({
       name,
       creationDate,
-      lastModificationDate,
-      structure
+      formatID
     }, (err, room) => {
       if (err) {
         console.log(err)
@@ -40,18 +39,18 @@ router.post('/api/action-plan-formats', verifyToken, async (req, res) => {
   }
 })
 
-router.put('/api/action-plan-formats/:id', async (req, res) => {
+router.put('/api/action-plans/:id', async (req, res) => {
   try {
-    await ActionPlanFormat.findByIdAndUpdate(req.params.id, req.body)
+    await ActionPlan.findByIdAndUpdate(req.params.id, req.body)
     res.json({ updated: true })
   } catch (error) {
     res.status(500).json({ updated: false })
   }
 })
 
-router.delete('/api/action-plan-formats/:id', verifyToken, async (req, res) => {
+router.delete('/api/action-plans/:id', verifyToken, async (req, res) => {
   try {
-    await ActionPlanFormat.findByIdAndDelete(req.params.id)
+    await ActionPlan.findByIdAndDelete(req.params.id)
     res.json({ deleted: true })
   } catch (error) {
     res.status(500).json({ deleted: false })
