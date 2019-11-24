@@ -45,7 +45,7 @@ router.post('/api/users/signin', async (req, res, next) => {
 
   const validatePassword = await user.validatePassword(password)
   if (!validatePassword) {
-    res.status(401).json({ auth: false, token: null, message: 'contraseña incorrecta' })
+    res.status(401).json({ auth: false, token: null, message: 'invalid password' })
   }
 
   const token = jwt.sign({ id: user._id }, config.secret, {
@@ -109,7 +109,7 @@ router.patch('/api/users/:id', verifyToken, async (req, res) => {
   }
 })
 
-router.put('/api/users/updateUser/:userID', async (req, res) => {
+router.put('/api/users/:userID', async (req, res) => {
   try {
     const logTime = await User.findOneAndUpdate({ _id: req.params.userID }, req.body)
     res.json(logTime)
