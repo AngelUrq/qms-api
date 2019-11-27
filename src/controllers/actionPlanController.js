@@ -1,6 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const ActionPlan = require('../models/ActionPlan')
+
+const ExcelParser = require('../utils/excelParser')
+
 const verifyToken = require('./verifyToken')
 
 router.get('/api/action-plans', async (req, res) => {
@@ -17,22 +20,43 @@ router.get('/api/action-plans', async (req, res) => {
   }
 })
 
-router.post('/api/action-plans', verifyToken, async (req, res) => {
+router.get('/api/action-plans/export/:id', async (req, res) => {
+  try {
+    const excelParser = new ExcelParser()
+
+    const actionPlan = await ActionPlan.findById(req.params.id)
+
+    const excel = require('excel4node')
+
+    const wb = new excel.Workbook()
+
+    const ws = wb.addWorksheet('Plan de acción')
+
+    await wb.write('ExcelFile.xlsx', res)
+  } catch (error) {
+    res.json({ message: error })
+  }
+})
+
+router.post('/api/action-plans', async (req, res) => {
   try {
     const { name, creationDate, formatID } = req.body
 
-    ActionPlan.create({
-      name,
-      creationDate,
-      formatID
-    }, (err, room) => {
-      if (err) {
-        console.log(err)
-        res.status(500).json({ created: false })
-      } else {
-        res.json({ created: true, id: room.id })
+    ActionPlan.create(
+      {
+        name,
+        creationDate,
+        formatID
+      },
+      (err, room) => {
+        if (err) {
+          console.log(err)
+          res.status(500).json({ created: false })
+        } else {
+          res.json({ created: true, id: room.id })
+        }
       }
-    })
+    )
   } catch (error) {
     console.log(error)
     res.status(500).json({ created: false })
