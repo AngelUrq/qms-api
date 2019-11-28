@@ -76,6 +76,30 @@ router.get('/api/users', verifyToken, async (req, res, next) => {
   res.json(users)
 })
 
+router.get('/api/users/:token', verifyToken, async (req, res, next) => {
+  try {
+    const token = req.params.token
+    if (!token) {
+      return res.status(401).json({
+        message: 'no token provived'
+      })
+    }
+    const decoded = jwt.verify(token, config.secret)
+
+    const userId = decoded.id
+    try {
+      const user = await User.findById(userId)
+      res.json(user)
+    } catch (err) {
+      res.status(500).json({ message: err.message })
+    }
+  } catch (error) {
+    return res.status(401).json({
+      message: 'invalid token'
+    })
+  }
+})
+
 router.delete('/api/users/:id', verifyToken, async (req, res) => {
   try {
     const removeUser = await User.remove({ _id: req.params.id })
