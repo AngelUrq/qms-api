@@ -62,13 +62,14 @@ function getAccessToken (oAuth2Client, callback) {
  */
 
 router.post('/api/calendar-events/add-event', async (req, res) => {
-  const { summary, description, startDate, endDate, location } = req.body
+  const { summary, description, startDate, endDate, location, attendees } = req.body
   const event = new Event({
     summary: summary,
     description: description,
     end: { dateTime: endDate },
     start: { dateTime: startDate },
-    location: location
+    location: location,
+    attendees: attendees
   })
   console.log(event)
   function insertEvent (auth) {
