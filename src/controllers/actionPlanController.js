@@ -20,13 +20,15 @@ router.get('/api/action-plans', async (req, res) => {
 
 router.post('/api/action-plans', async (req, res) => {
   try {
-    const { name, creationDate, formatID } = req.body
+    const { name, description, creationDate, formatID, structure } = req.body
 
     ActionPlan.create(
       {
         name,
         creationDate,
-        formatID
+        description,
+        formatID,
+        structure
       },
       (err, room) => {
         if (err) {
