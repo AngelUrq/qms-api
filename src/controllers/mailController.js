@@ -7,8 +7,8 @@ router.post('/api/mail/send', async (req, res) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: '',
-      pass: ''
+      user: 'UPBgestiondecalidad@gmail.com',
+      pass: 'upbcalidad'
     }
   })
 
