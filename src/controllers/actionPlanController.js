@@ -18,6 +18,20 @@ router.get('/api/action-plans', async (req, res) => {
   }
 })
 
+router.get('/api/action-plans/:id', async (req, res) => {
+  try {
+    const actionPlans = await ActionPlan.findById(req.params.id)
+
+    if (!actionPlans) {
+      return res.status(404).send('No action plan formats found')
+    }
+
+    res.json(actionPlans)
+  } catch (error) {
+    res.json({ message: error })
+  }
+})
+
 router.post('/api/action-plans', async (req, res) => {
   try {
     const { name, creationDate, formatID } = req.body
