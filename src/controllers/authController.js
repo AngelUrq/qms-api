@@ -34,29 +34,34 @@ router.post('/api/users/signup', async (req, res) => {
 })
 
 router.post('/api/users/signin', async (req, res) => {
-  const { email, code, password } = req.body
-  const userEmail = await User.findOne({ email: email })
-  const userCode = await User.findOne({ code: code })
+  try {
+    const { email, code, password } = req.body
+    const userEmail = await User.findOne({ email: email })
+    const userCode = await User.findOne({ code: code })
 
-  if (!userEmail && !userCode) {
-    return res.status(404).send("user doesn't exist")
+    if (!userEmail && !userCode) {
+      return res.status(404).send("user doesn't exist")
+    }
+
+    var user = userEmail
+
+    if (!userEmail) {
+      user = userCode
+    }
+
+    const validatePassword = await user.validatePassword(password)
+    if (!validatePassword) {
+      res.status(401).json({ auth: false, token: null, message: 'invalid password' })
+    }
+
+    const token = jwt.sign({ id: user._id }, config.secret, {
+      expiresIn: 60 * 60 * 24
+    })
+    res.json({ auth: true, token })
+  } catch (error) {
+    console.log(error)
+    res.json({ message: error })
   }
-
-  var user = userEmail
-
-  if (!userEmail) {
-    user = userCode
-  }
-
-  const validatePassword = await user.validatePassword(password)
-  if (!validatePassword) {
-    res.status(401).json({ auth: false, token: null, message: 'invalid password' })
-  }
-
-  const token = jwt.sign({ id: user._id }, config.secret, {
-    expiresIn: 60 * 60 * 24
-  })
-  res.json({ auth: true, token })
 })
 
 router.post('/api/users/isLogged', verifyToken, async (req, res, next) => {
@@ -68,8 +73,8 @@ router.post('/api/users/isLogged', verifyToken, async (req, res, next) => {
 })
 
 router.get('/api/users', verifyToken, async (req, res, next) => {
-  const users = await User.find({}, { password: 0 })
   try {
+    const users = await User.find({}, { password: 0 })
     if (!users) {
       return res.status(404).send('No users found')
     }
@@ -77,8 +82,6 @@ router.get('/api/users', verifyToken, async (req, res, next) => {
   } catch (error) {
     res.json({ message: error })
   }
-
-  res.json(users)
 })
 
 router.get('/api/users/:token', verifyToken, async (req, res, next) => {
