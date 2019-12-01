@@ -6,29 +6,34 @@ const config = require('../config')
 const verifyToken = require('./verifyToken')
 const User = require('../models/User')
 
-router.post('/api/users/signup', async (req, res, next) => {
-  const { code, password, firstNames, paternalLastName, maternalLastName, email, city, phone, notes, role, lastLogIn } = req.body
-  const user = new User({
-    code,
-    password,
-    firstNames,
-    paternalLastName,
-    maternalLastName,
-    email,
-    city,
-    phone,
-    notes,
-    role,
-    lastLogIn
-  })
+router.post('/api/users/signup', async (req, res) => {
+  try {
+    const { code, password, firstNames, paternalLastName, maternalLastName, email, city, phone, notes, role, lastLogIn } = req.body
+    const user = new User({
+      code,
+      password,
+      firstNames,
+      paternalLastName,
+      maternalLastName,
+      email,
+      city,
+      phone,
+      notes,
+      role,
+      lastLogIn
+    })
 
-  user.password = await user.encryptPassword(user.password)
-  await user.save()
+    user.password = await user.encryptPassword(user.password)
+    await user.save()
 
-  res.json({ auth: true })
+    res.json({ auth: true })
+  } catch (error) {
+    console.log(error)
+    res.json({ message: error })
+  }
 })
 
-router.post('/api/users/signin', async (req, res, next) => {
+router.post('/api/users/signin', async (req, res) => {
   const { email, code, password } = req.body
   const userEmail = await User.findOne({ email: email })
   const userCode = await User.findOne({ code: code })

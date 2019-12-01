@@ -14,5 +14,6 @@ app.use(require('./controllers/mailController'))
 app.use(require('./controllers/actionPlanFormatController'))
 app.use(require('./controllers/actionPlanController'))
 app.use(require('./controllers/calendarController'))
+app.use(require('./controllers/nonconformityController'))
 
 module.exports = app
