@@ -98,7 +98,7 @@ router.get('/api/users/:id', verifyToken, async (req, res) => {
   }
 })
 
-router.get('/api/users/:token', verifyToken, async (req, res, next) => {
+router.get('/api/users/token/:token', verifyToken, async (req, res, next) => {
   try {
     const token = req.params.token
     if (!token) {
