@@ -40,7 +40,7 @@ router.post('/api/reports', verifyToken, async (req, res) => {
   }
 })
 
-router.patch('/api/reports/:id', verifyToken, async (req, res) => {
+router.put('/api/reports/:id', verifyToken, async (req, res) => {
   try {
     await Report.findByIdAndUpdate(req.params.id, req.body)
     res.json({ updated: true })
