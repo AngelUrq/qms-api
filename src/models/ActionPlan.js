@@ -5,6 +5,7 @@ const actionPlanFormatSchema = new Schema({
   description: String,
   creationDate: Date,
   formatID: String,
+  findingType: String,
   structure: Object
 })
 
