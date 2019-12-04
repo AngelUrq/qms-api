@@ -36,17 +36,17 @@ router.post('/api/users/signup', async (req, res) => {
 router.post('/api/users/signin', async (req, res) => {
   try {
     const { email, code, password } = req.body
-    const userEmail = await User.findOne({ email: email })
-    const userCode = await User.findOne({ code: code })
+    const userByEmail = await User.findOne({ email: email })
+    const userByCode = await User.findOne({ code: code })
 
-    if (!userEmail && !userCode) {
+    if (!userByEmail && !userByCode) {
       return res.status(404).send("user doesn't exist")
     }
 
-    var user = userEmail
+    var user = userByEmail
 
-    if (!userEmail) {
-      user = userCode
+    if (!userByEmail) {
+      user = userByCode
     }
 
     const validatePassword = await user.validatePassword(password)
@@ -57,7 +57,7 @@ router.post('/api/users/signin', async (req, res) => {
     const token = jwt.sign({ id: user._id }, config.secret, {
       expiresIn: 60 * 60 * 24
     })
-    res.json({ auth: true, token })
+    res.json({ auth: true, token, role: user.role })
   } catch (error) {
     console.log(error)
     res.json({ message: error })

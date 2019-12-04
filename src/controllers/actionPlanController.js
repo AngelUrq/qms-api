@@ -34,7 +34,7 @@ router.get('/api/action-plans/:id', async (req, res) => {
 
 router.post('/api/action-plans', async (req, res) => {
   try {
-    const { name, description, creationDate, formatID, structure } = req.body
+    const { name, description, creationDate, formatID, findingType, structure } = req.body
 
     ActionPlan.create(
       {
@@ -42,6 +42,7 @@ router.post('/api/action-plans', async (req, res) => {
         creationDate,
         description,
         formatID,
+        findingType,
         structure
       },
       (err, room) => {
