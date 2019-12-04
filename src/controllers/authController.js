@@ -72,7 +72,7 @@ router.post('/api/users/isLogged', verifyToken, async (req, res, next) => {
   }
 })
 
-router.get('/api/users', verifyToken, async (req, res, next) => {
+router.get('/api/users', verifyToken, async (req, res) => {
   try {
     const users = await User.find({}, { password: 0 })
     if (!users) {
@@ -131,7 +131,7 @@ router.delete('/api/users/:id', verifyToken, async (req, res) => {
   }
 })
 
-router.patch('/api/users/:id', verifyToken, async (req, res) => {
+router.put('/api/users/:id', verifyToken, async (req, res) => {
   try {
     const updateUserInfo = await User.updateOne({ _id: req.params.id },
       {
@@ -155,7 +155,7 @@ router.patch('/api/users/:id', verifyToken, async (req, res) => {
   }
 })
 
-router.put('/api/users/:userID', async (req, res) => {
+router.put('/api/users/log-time/:userID', async (req, res) => {
   try {
     const logTime = await User.findOneAndUpdate({ _id: req.params.userID }, req.body)
     res.json(logTime)
@@ -164,7 +164,7 @@ router.put('/api/users/:userID', async (req, res) => {
   }
 })
 
-router.patch('/api/password-reset/:email', async (req, res) => {
+router.put('/api/password-reset/:email', async (req, res) => {
   try {
     const userEmail = await User.findOne({ email: req.params.email })
     if (!userEmail) {
