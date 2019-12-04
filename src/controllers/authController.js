@@ -164,4 +164,23 @@ router.put('/api/users/:userID', async (req, res) => {
   }
 })
 
+router.patch('/api/password-reset/:email', async (req, res) => {
+  try {
+    const userEmail = await User.findOne({ email: req.params.email })
+    if (!userEmail) {
+      return res.status(404).send("user doesn't exist")
+    } else {
+      const { password } = req.body
+      const user = new User({
+        password
+      })
+      user.password = await user.encryptPassword(user.password)
+      console.log(user.password)
+      const updateUserPass = await User.updateOne({ email: req.params.email }, { $set: { password: user.password } })
+      res.json(updateUserPass)
+    }
+  } catch (error) {
+    res.json({ message: error })
+  }
+})
 module.exports = router
