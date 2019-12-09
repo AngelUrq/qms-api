@@ -3,8 +3,8 @@ const { Schema, model } = require('mongoose')
 const reportFormatSchema = new Schema({
   name: String,
   version: String,
-  creationDate: String,
-  lastModificationDate: String,
+  creationDate: Date,
+  lastModificationDate: Date,
   title: String,
   subtitles: []
 })
