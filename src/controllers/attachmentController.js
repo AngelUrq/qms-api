@@ -9,9 +9,13 @@ const upload = multer({
   dest: './uploads/'
 })
 
-router.get('/api/attachments', async (req, res) => {
+router.get('/api/attachments/:actionPlanID/:activityID', async (req, res) => {
   try {
-    const attachments = await Attachment.find()
+    const attachments =
+      await Attachment.find({
+        actionPlanID: req.params.actionPlanID,
+        activityID: req.params.activityID
+      })
 
     if (!attachments) {
       return res.status(404).send('No attachments found')
