@@ -9,7 +9,7 @@ const upload = multer({
   dest: './uploads/'
 })
 
-router.get('/api/attachments/:actionPlanID/:activityID', async (req, res) => {
+router.get('/api/attachments/search/:actionPlanID/:activityID', async (req, res) => {
   try {
     const attachments =
       await Attachment.find({
