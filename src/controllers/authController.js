@@ -40,7 +40,7 @@ router.post('/api/users/signin', async (req, res) => {
     const userByCode = await User.findOne({ code: code })
 
     if (!userByEmail && !userByCode) {
-      return res.status(404).send("user doesn't exist")
+      return res.status(404).json({ message: 'Usuario inexistente' })
     }
 
     var user = userByEmail
@@ -51,7 +51,7 @@ router.post('/api/users/signin', async (req, res) => {
 
     const validatePassword = await user.validatePassword(password)
     if (!validatePassword) {
-      res.status(401).json({ auth: false, token: null, message: 'invalid password' })
+      res.status(401).json({ auth: false, token: null, message: 'Contraseña inválida' })
     }
 
     const token = jwt.sign({ id: user._id }, config.secret, {
