@@ -7,7 +7,7 @@ function verifyToken (req, res, next) {
     if (!token) {
       return res.status(401).json({
         auth: false,
-        message: 'no token provived'
+        message: 'no token provided'
       })
     }
     const decoded = jwt.verify(token, config.secret)
