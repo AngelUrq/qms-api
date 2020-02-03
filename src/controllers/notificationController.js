@@ -18,8 +18,8 @@ router.post('/api/notifications/add', verifyToken, async (req, res) => {
 })
 
 router.get('/api/notifications/:email', verifyToken, async (req, res) => {
-  const userNotifications = await Notification.find({ email: req.params.email }, {})
   try {
+    const userNotifications = await Notification.find({ email: req.params.email }, {})
     res.json(userNotifications)
   } catch (error) {
     res.json({ message: error })
